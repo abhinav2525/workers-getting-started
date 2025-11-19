@@ -11,16 +11,19 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
+import { Hono } from "hono";
+
 export interface Env {
+	AI: Ai;
 }
 
-export default {
-	async fetch(request, env, ctx): Promise<Response> {
-		console.log("Hi");
-		return new Response(JSON.stringify({ message: "Hello,44vibe!" }), {
-			headers: {
-				"Content-Type": "application/json",
-			},
-		});
-	},
-} satisfies ExportedHandler<Env>;
+const app = new Hono<{ Bindings: Env }>();
+
+app.get("/", async (c) => {
+	const answer = await c.env.AI.run('@cf/meta/llama-3-8b-instruct', {
+		prompt: "tell me meaning of 44vibe"
+	});
+	return c.json({ message: "Hello,44vibe!", ai_response: answer });
+});
+
+export default app;

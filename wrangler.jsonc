@@ -9,7 +9,15 @@
 	"compatibility_date": "2025-11-19",
 	"observability": {
 		"enabled": true
-	}
+	},
+	/**
+	 * AI Binding
+	 * Docs: https://developers.cloudflare.com/workers/ai/
+	 */
+	"ai": {
+		"binding": "AI",
+		"remote": true
+	},
 	/**
 	 * Smart Placement
 	 * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
