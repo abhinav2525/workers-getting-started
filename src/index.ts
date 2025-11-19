@@ -11,8 +11,16 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
+export interface Env {
+}
+
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
-		return new Response('Hello World!');
+		console.log("Hi");
+		return new Response(JSON.stringify({ message: "Hello,44vibe!" }), {
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
 	},
 } satisfies ExportedHandler<Env>;
