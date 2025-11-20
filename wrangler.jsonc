@@ -19,11 +19,19 @@
 		"remote": true
 	},
 	"kv_namespaces": [
-    {
-      "binding": "MY_KV",
-      "id": "045341a755bc47458b6adb9347514687"
-    }
-  ],
+		{
+			"binding": "MY_KV",
+			"id": "045341a755bc47458b6adb9347514687"
+		}
+	],
+	"d1_databases": [
+		{
+			"binding": "movieDB",
+			"database_name": "movie-example",
+			"database_id": "d2ca6733-f9e8-4a79-95c1-a70609c5c35f",
+			"remote": true
+		}
+	],
 	/**
 	 * Smart Placement
 	 * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
