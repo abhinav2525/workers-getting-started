@@ -27,9 +27,11 @@ app.get("/", async (c) => {
 	  { role: 'system', content: 'You are a friendly assistant' },
 	  { role: 'user', content }
 	];
-	
+
 	const answer = await c.env.AI.run('@cf/meta/llama-3-8b-instruct', { messages });
 	return c.json({ message: "Hello,44vibe!", ai_response: answer });
 });
+
+app.get("/:")
 
 export default app;
