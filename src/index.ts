@@ -15,6 +15,7 @@ import { Hono } from "hono";
 
 export interface Env {
 	AI: Ai;
+	MY_KV: KVNamespace;
 }
 
 const app = new Hono<{ Bindings: Env }>();
@@ -32,6 +33,24 @@ app.get("/", async (c) => {
 	return c.json({ message: "Hello,44vibe!", ai_response: answer });
 });
 
-app.get("/:")
+app.get("/repos/:username", async (c) => {
+	const username = c.req.param("username");
+	const cached = await c.env.MY_KV.get(`repos:${username}`, "json");
+  
+	if (cached) {
+	  return c.json(cached);
+	} else {
+	  const resp = await fetch(`https://api.github.com/users/${username}/repos`, {
+		headers: {
+		  "User-Agent": "CF Workers",
+		},
+	  });
+	  const data = await resp.json();
+	  await c.env.MY_KV.put(`repos:${username}`, JSON.stringify(data), {
+		expirationTtl: 60,
+	  });
+	  return c.json(data);
+	}
+  });
 
 export default app;
