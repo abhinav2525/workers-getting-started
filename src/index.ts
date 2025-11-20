@@ -11,13 +11,26 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
+import { WorkerEntrypoint } from "cloudflare:workers";
 import { Hono } from "hono";
 
 export interface Env {
 	AI: Ai;
 	MY_KV: KVNamespace;
+	movieDB: D1Database;
 }
 
+export class MoviesService extends WorkerEntrypoint {
+	async getMovies() {
+	  const query = "select * from movies";
+	  // @ts-expect-error
+	  const { results: movies } = await this.env.movieDB
+		.prepare(query)
+		.all();
+	  return movies;
+	};
+  }
+  
 const app = new Hono<{ Bindings: Env }>();
 
 app.get("/", async (c) => {
@@ -51,6 +64,28 @@ app.get("/repos/:username", async (c) => {
 	  });
 	  return c.json(data);
 	}
+  });
+
+  app.get("/movies", async (c) => {
+	const { results: movies } = await c.env.movieDB.prepare("select * from movie")
+	  .all();
+	return c.json(movies);
+  });
+  
+  app.get("/favorites", async (c) => {
+	const { results: favorites } = await c.env.movieDB.prepare(
+	  "select * from movie order by rating desc limit 3",
+	).all();
+	return c.json(favorites);
+  });
+  
+  app.post("/movies/:id", async (c) => {
+	const body = await c.req.json();
+	const result = await c.env.movieDB.prepare(
+	  "UPDATE movie SET rating = ?1 WHERE id = ?2 RETURNING *",
+	).bind(body.rating, c.req.param("id")).run();
+	const ok = result.success;
+	return c.json({ ok });
   });
 
 export default app;
