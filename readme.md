@@ -11,6 +11,22 @@ This is a Cloudflare Workers project using the Hono web framework with Workers A
 - `npm test` - Run tests using Vitest
 - `npm run cf-typegen` - Regenerate TypeScript types for bindings from wrangler.jsonc
 
+## D1 Database Commands
+
+### Local Development
+- `npx wrangler dev --local` - Start dev server with local D1 database (runs on http://localhost:8788/)
+- `npx wrangler d1 migrations apply movie-example --local` - Apply migrations to local database
+- `npx wrangler d1 execute movie-example --local --command "SELECT * FROM movie"` - Execute SQL on local database
+
+### Remote/Production
+- `npx wrangler d1 migrations apply movie-example --remote` - Apply migrations to remote (production) database
+- `npx wrangler d1 execute movie-example --remote --command "SELECT * FROM movie"` - Execute SQL on remote database
+
+### API Endpoints
+- `GET /movies` - Fetch all movies
+- `GET /favorites` - Fetch top 3 rated movies
+- `POST /movies/:id` - Update movie rating (body: `{"rating": 5}`)
+
 ## Architecture
 
 ### Framework
